@@ -1,0 +1,40 @@
+{
+	"name": "Ds_Binary_Upstream_DataLake",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ls_Upstream_DataLake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Container": {
+				"type": "string"
+			},
+			"Dir": {
+				"type": "string"
+			},
+			"Filename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().Filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().Dir",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().Container",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,9 @@
+{
+	"name": "7x4-data-factory",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "1bf1b5fa-dca9-45d7-9ded-a50435e1f848",
+		"tenantId": "46ad7d19-6e20-482f-9350-9ded1a09f838"
+	}
+}
