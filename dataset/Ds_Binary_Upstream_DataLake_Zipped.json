@@ -33,6 +33,10 @@
 					"value": "@dataset().Container",
 					"type": "Expression"
 				}
+			},
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Optimal"
 			}
 		}
 	},
