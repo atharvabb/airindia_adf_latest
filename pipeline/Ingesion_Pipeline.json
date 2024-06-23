@@ -15,7 +15,7 @@
 						"referenceName": "DataLake_To_7x4_DataLaka",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": false
+					"waitOnCompletion": true
 				}
 			},
 			{
