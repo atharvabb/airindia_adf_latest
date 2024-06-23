@@ -232,8 +232,47 @@
 												},
 												"userProperties": [],
 												"typeProperties": {
+													"source": {
+														"type": "JsonSource",
+														"storeSettings": {
+															"type": "HttpReadSettings",
+															"requestMethod": "GET"
+														},
+														"formatSettings": {
+															"type": "JsonReadSettings"
+														}
+													},
+													"sink": {
+														"type": "BinarySink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														}
+													},
 													"enableStaging": false
-												}
+												},
+												"inputs": [
+													{
+														"referenceName": "Ds_Api_Data",
+														"type": "DatasetReference",
+														"parameters": {
+															"url": {
+																"value": "@pipeline().parameters.Api_link",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "Ds_Binary_7X4_DataLake",
+														"type": "DatasetReference",
+														"parameters": {
+															"Container": "@item().Dump_Layer",
+															"Dir": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
+															"Filename": "@item().Src_File_Name"
+														}
+													}
+												]
 											}
 										]
 									}
@@ -267,6 +306,10 @@
 			"Lookup_Filename": {
 				"type": "string",
 				"defaultValue": "datalake_lkp.json"
+			},
+			"Api_link": {
+				"type": "string",
+				"defaultValue": "https://airlabs.co/api/v9/airlines/?api_key=3f4cd1d8-29bd-4f7e-b359-52a1292f2438"
 			}
 		},
 		"annotations": []
