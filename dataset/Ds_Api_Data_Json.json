@@ -1,5 +1,5 @@
 {
-	"name": "Ds_Api_Data",
+	"name": "Ds_Api_Data_Json",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "Ls_Http_Aips",

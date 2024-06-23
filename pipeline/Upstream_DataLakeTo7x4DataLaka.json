@@ -243,16 +243,19 @@
 														}
 													},
 													"sink": {
-														"type": "BinarySink",
+														"type": "JsonSink",
 														"storeSettings": {
 															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "JsonWriteSettings"
 														}
 													},
 													"enableStaging": false
 												},
 												"inputs": [
 													{
-														"referenceName": "Ds_Api_Data",
+														"referenceName": "Ds_Api_Data_Json",
 														"type": "DatasetReference",
 														"parameters": {
 															"url": {
@@ -264,7 +267,7 @@
 												],
 												"outputs": [
 													{
-														"referenceName": "Ds_Binary_7X4_DataLake",
+														"referenceName": "Ds_Json_7X4Lookup",
 														"type": "DatasetReference",
 														"parameters": {
 															"Container": "@item().Dump_Layer",
