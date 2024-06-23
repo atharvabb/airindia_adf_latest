@@ -1,0 +1,320 @@
+{
+	"name": "DataLake_To_7x4_DataLaka",
+	"properties": {
+		"activities": [
+			{
+				"name": "Ref_Json_Lookup",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "Ds_Json_7X4Lookup",
+						"type": "DatasetReference",
+						"parameters": {
+							"Container": {
+								"value": "@pipeline().parameters.Lookup_Container",
+								"type": "Expression"
+							},
+							"Dir": {
+								"value": "@pipeline().parameters.Lookup_Dir",
+								"type": "Expression"
+							},
+							"Filename": {
+								"value": "@pipeline().parameters.Lookup_Filename",
+								"type": "Expression"
+							}
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Ref_Json_Lookup",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Ref_Json_Lookup').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Switch1",
+							"type": "Switch",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"on": {
+									"value": "@item().file_type",
+									"type": "Expression"
+								},
+								"cases": [
+									{
+										"value": "csv",
+										"activities": [
+											{
+												"name": "Copy CSV DataLake",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "BinarySource",
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": true
+														},
+														"formatSettings": {
+															"type": "BinaryReadSettings"
+														}
+													},
+													"sink": {
+														"type": "BinarySink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														}
+													},
+													"enableStaging": false
+												},
+												"inputs": [
+													{
+														"referenceName": "Ds_Binary_Upstream_DataLake",
+														"type": "DatasetReference",
+														"parameters": {
+															"Container": {
+																"value": "@item().Src_File_Container",
+																"type": "Expression"
+															},
+															"Dir": {
+																"value": "@item().Src_File_Dir",
+																"type": "Expression"
+															},
+															"Filename": {
+																"value": "@item().Src_File_Name",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "Ds_Binary_7X4_DataLake",
+														"type": "DatasetReference",
+														"parameters": {
+															"Container": {
+																"value": "@item().Dump_Layer",
+																"type": "Expression"
+															},
+															"Dir": {
+																"value": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
+																"type": "Expression"
+															},
+															"Filename": "@item().Src_File_Name"
+														}
+													}
+												]
+											}
+										]
+									},
+									{
+										"value": "zip",
+										"activities": [
+											{
+												"name": "Copy ZIP DataLake",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "BinarySource",
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": true
+														},
+														"formatSettings": {
+															"type": "BinaryReadSettings",
+															"compressionProperties": {
+																"type": "ZipDeflateReadSettings",
+																"preserveZipFileNameAsFolder": false
+															}
+														}
+													},
+													"sink": {
+														"type": "BinarySink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														}
+													},
+													"enableStaging": false
+												},
+												"inputs": [
+													{
+														"referenceName": "Ds_Binary_Upstream_DataLake_Zipped",
+														"type": "DatasetReference",
+														"parameters": {
+															"Container": "@item().Src_File_Container",
+															"Dir": "@item().Src_File_Dir",
+															"Filename": {
+																"value": "@item().Src_File_Name",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "Ds_Binary_7X4_DataLake",
+														"type": "DatasetReference",
+														"parameters": {
+															"Container": "@item().Dump_Layer",
+															"Dir": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
+															"Filename": "@item().Src_File_Name"
+														}
+													}
+												]
+											}
+										]
+									},
+									{
+										"value": "api",
+										"activities": [
+											{
+												"name": "Copy data1",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "JsonSource",
+														"storeSettings": {
+															"type": "HttpReadSettings",
+															"requestMethod": "GET"
+														},
+														"formatSettings": {
+															"type": "JsonReadSettings"
+														}
+													},
+													"sink": {
+														"type": "JsonSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "JsonWriteSettings"
+														}
+													},
+													"enableStaging": false
+												},
+												"inputs": [
+													{
+														"referenceName": "Ds_Api_Data_Json",
+														"type": "DatasetReference",
+														"parameters": {
+															"url": {
+																"value": "@pipeline().parameters.Api_link",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "Ds_Json_7X4Lookup",
+														"type": "DatasetReference",
+														"parameters": {
+															"Container": "@item().Dump_Layer",
+															"Dir": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
+															"Filename": "@item().Src_File_Name"
+														}
+													}
+												]
+											}
+										]
+									}
+								],
+								"defaultActivities": [
+									{
+										"name": "Wait1",
+										"type": "Wait",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"waitTimeInSeconds": 1
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"Lookup_Container": {
+				"type": "string",
+				"defaultValue": "reference-files"
+			},
+			"Lookup_Dir": {
+				"type": "string",
+				"defaultValue": "."
+			},
+			"Lookup_Filename": {
+				"type": "string",
+				"defaultValue": "datalake_lkp.json"
+			},
+			"Api_link": {
+				"type": "string",
+				"defaultValue": "https://airlabs.co/api/v9/airlines/?api_key=3f4cd1d8-29bd-4f7e-b359-52a1292f2438"
+			}
+		},
+		"annotations": []
+	}
+}

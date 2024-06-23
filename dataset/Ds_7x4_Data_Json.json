@@ -1,0 +1,22 @@
+{
+	"name": "Ds_7x4_Data_Json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ls_7X4_AirIndia_DataLake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"url": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation"
+			}
+		},
+		"schema": {}
+	}
+}
