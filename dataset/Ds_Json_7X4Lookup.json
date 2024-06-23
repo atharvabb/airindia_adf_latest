@@ -1,5 +1,5 @@
 {
-	"name": "Json1",
+	"name": "Ds_Json_7X4Lookup",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "Ls_7X4_AirIndia_DataLake",
