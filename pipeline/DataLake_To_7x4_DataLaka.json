@@ -192,11 +192,7 @@
 														"type": "DatasetReference",
 														"parameters": {
 															"Container": "@item().Src_File_Container",
-															"Dir": "@item().Src_File_Dir",
-															"Filename": {
-																"value": "@item().Src_File_Name",
-																"type": "Expression"
-															}
+															"Dir": "@item().Src_File_Dir"
 														}
 													}
 												],
@@ -206,8 +202,7 @@
 														"type": "DatasetReference",
 														"parameters": {
 															"Container": "@item().Dump_Layer",
-															"Dir": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
-															"Filename": "@item().Src_File_Name"
+															"Dir": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))"
 														}
 													}
 												]
