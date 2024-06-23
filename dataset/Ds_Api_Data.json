@@ -1,0 +1,17 @@
+{
+	"name": "Ds_Api_Data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ls_Http_Aips",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			}
+		},
+		"schema": {}
+	}
+}
