@@ -1,0 +1,7 @@
+{
+	"name": "On-Prem-AirIndia-Optimus-8106",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "Used to Access Local SQL Servers installed onprem"
+	}
+}
