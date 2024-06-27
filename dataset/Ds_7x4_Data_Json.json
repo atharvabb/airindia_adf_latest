@@ -12,7 +12,7 @@
 			"dir": {
 				"type": "string"
 			},
-			"finename": {
+			"filename": {
 				"type": "string"
 			}
 		},
@@ -21,9 +21,18 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "@dataset().Filename",
-				"folderPath": "@dataset().Dir",
-				"fileSystem": "@dataset().Container"
+				"fileName": {
+					"value": "@dataset().Filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().Dir",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().Container",
+					"type": "Expression"
+				}
 			}
 		},
 		"schema": {}

@@ -38,7 +38,7 @@
 								"value": "@pipeline().parameters.Lookup_Dir",
 								"type": "Expression"
 							},
-							"finename": {
+							"filename": {
 								"value": "@pipeline().parameters.Lookup_Filename",
 								"type": "Expression"
 							}
@@ -209,7 +209,7 @@
 																"value": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
 																"type": "Expression"
 															},
-															"finename": "@item().Src_File_Name"
+															"filename": "@item().Src_File_Name"
 														}
 													}
 												]
