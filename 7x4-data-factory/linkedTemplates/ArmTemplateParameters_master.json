@@ -17,6 +17,9 @@
 		"Ls_Upstream_DataLake_accountKey": {
 			"value": ""
 		},
+		"MySql_onprem_password": {
+			"value": ""
+		},
 		"Ls_7X4_AirIndia_DataLake_properties_typeProperties_url": {
 			"value": "https://airindia7x4.dfs.core.windows.net/"
 		},
@@ -37,6 +40,15 @@
 		},
 		"Ls_Upstream_DataLake_properties_typeProperties_url": {
 			"value": "https://elayerairindiadatalake.dfs.core.windows.net/"
+		},
+		"MySql_onprem_properties_typeProperties_server": {
+			"value": "localhost"
+		},
+		"MySql_onprem_properties_typeProperties_database": {
+			"value": "world"
+		},
+		"MySql_onprem_properties_typeProperties_username": {
+			"value": "root"
 		},
 		"containerUri": {
 			"value": ""

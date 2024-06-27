@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'Ls_Upstream_DataLake'"
 		},
+		"MySql_onprem_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MySql_onprem'"
+		},
 		"Ls_7X4_AirIndia_DataLake_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://airindia7x4.dfs.core.windows.net/"
@@ -50,12 +54,186 @@
 		"Ls_Upstream_DataLake_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://elayerairindiadatalake.dfs.core.windows.net/"
+		},
+		"MySql_onprem_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "localhost"
+		},
+		"MySql_onprem_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "world"
+		},
+		"MySql_onprem_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "root"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Azure_SQL_To_Datalake')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Ref_Json_Lookup",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "Ds_Json_7X4_DataLake_File",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": {
+										"value": "@pipeline().parameters.Lookup_Container",
+										"type": "Expression"
+									},
+									"file": {
+										"value": "@pipeline().parameters.Lookup_Filename",
+										"type": "Expression"
+									},
+									"dir": {
+										"value": "@pipeline().parameters.Lookup_Dir",
+										"type": "Expression"
+									}
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Ref_Json_Lookup",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Ref_Json_Lookup').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy data1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "Ds_SQL_db_bsl_airindia_db",
+											"type": "DatasetReference",
+											"parameters": {
+												"db_table": "@item().tablename_source"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "Ds_Parquet_7X4_Datalake",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@item().container_sink",
+													"type": "Expression"
+												},
+												"dir": {
+													"value": "@concat(item().directory_sink,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
+													"type": "Expression"
+												},
+												"filename": "@item().filename_sink"
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"Lookup_Container": {
+						"type": "string",
+						"defaultValue": "reference-files"
+					},
+					"Lookup_Dir": {
+						"type": "string",
+						"defaultValue": "."
+					},
+					"Lookup_Filename": {
+						"type": "string",
+						"defaultValue": "Table_Source_SQL.json"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Ds_Json_7X4_DataLake_File')]",
+				"[concat(variables('factoryId'), '/datasets/Ds_SQL_db_bsl_airindia_db')]",
+				"[concat(variables('factoryId'), '/datasets/Ds_Parquet_7X4_Datalake')]"
+			]
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Blob_to_7x4_DataLake')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -466,7 +644,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "SQL_To_Datalake",
+								"referenceName": "Azure_SQL_To_Datalake",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -481,11 +659,11 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/DataLake_To_7x4_DataLaka')]",
-				"[concat(variables('factoryId'), '/pipelines/SQL_To_Datalake')]"
+				"[concat(variables('factoryId'), '/pipelines/Azure_SQL_To_Datalake')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SQL_To_Datalake')]",
+			"name": "[concat(parameters('factoryName'), '/OnPremise_SQL_To_Datalake')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -567,9 +745,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "AzureSqlSource",
-											"queryTimeout": "02:00:00",
-											"partitionOption": "None"
+											"type": "MySqlSource"
 										},
 										"sink": {
 											"type": "ParquetSink",
@@ -592,11 +768,9 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "Ds_SQL_db_bsl_airindia_db",
+											"referenceName": "MySqlTable1",
 											"type": "DatasetReference",
-											"parameters": {
-												"db_table": "@item().tablename_source"
-											}
+											"parameters": {}
 										}
 									],
 									"outputs": [
@@ -635,14 +809,14 @@
 					},
 					"Lookup_Filename": {
 						"type": "string",
-						"defaultValue": "Table_Source_SQL.json"
+						"defaultValue": "Table_Source_ONPREM_SQL.json"
 					}
 				},
 				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Ds_Json_7X4_DataLake_File')]",
-				"[concat(variables('factoryId'), '/datasets/Ds_SQL_db_bsl_airindia_db')]",
+				"[concat(variables('factoryId'), '/datasets/MySqlTable1')]",
 				"[concat(variables('factoryId'), '/datasets/Ds_Parquet_7X4_Datalake')]"
 			]
 		},
@@ -1009,6 +1183,26 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/MySqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MySql_onprem",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "MySqlTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "`city`"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MySql_onprem')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Ls_7X4_AirIndia_DataLake')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -1107,6 +1301,46 @@
 						"value": "[parameters('Ls_Upstream_DataLake_accountKey')]"
 					}
 				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MySql_onprem')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "MySql",
+				"typeProperties": {
+					"server": "[parameters('MySql_onprem_properties_typeProperties_server')]",
+					"port": 3306,
+					"database": "[parameters('MySql_onprem_properties_typeProperties_database')]",
+					"username": "[parameters('MySql_onprem_properties_typeProperties_username')]",
+					"sslMode": 1,
+					"useSystemTrustStore": 0,
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('MySql_onprem_password')]"
+					},
+					"driverVersion": "v2"
+				},
+				"connectVia": {
+					"referenceName": "On-Prem-AirIndia-Optimus-8106",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/On-Prem-AirIndia-Optimus-8106')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/On-Prem-AirIndia-Optimus-8106')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"description": "Used to Access Local SQL Servers installed onprem",
+				"typeProperties": {}
 			},
 			"dependsOn": []
 		}

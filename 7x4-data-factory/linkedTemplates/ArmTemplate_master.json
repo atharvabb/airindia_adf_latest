@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'Ls_Upstream_DataLake'"
 		},
+		"MySql_onprem_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MySql_onprem'"
+		},
 		"Ls_7X4_AirIndia_DataLake_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://airindia7x4.dfs.core.windows.net/"
@@ -50,6 +54,18 @@
 		"Ls_Upstream_DataLake_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://elayerairindiadatalake.dfs.core.windows.net/"
+		},
+		"MySql_onprem_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "localhost"
+		},
+		"MySql_onprem_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "world"
+		},
+		"MySql_onprem_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "root"
 		},
 		"containerUri": {
 			"type": "string",
@@ -90,6 +106,9 @@
 					"Ls_Upstream_DataLake_accountKey": {
 						"value": "[parameters('Ls_Upstream_DataLake_accountKey')]"
 					},
+					"MySql_onprem_password": {
+						"value": "[parameters('MySql_onprem_password')]"
+					},
 					"Ls_7X4_AirIndia_DataLake_properties_typeProperties_url": {
 						"value": "[parameters('Ls_7X4_AirIndia_DataLake_properties_typeProperties_url')]"
 					},
@@ -110,10 +129,39 @@
 					},
 					"Ls_Upstream_DataLake_properties_typeProperties_url": {
 						"value": "[parameters('Ls_Upstream_DataLake_properties_typeProperties_url')]"
+					},
+					"MySql_onprem_properties_typeProperties_server": {
+						"value": "[parameters('MySql_onprem_properties_typeProperties_server')]"
+					},
+					"MySql_onprem_properties_typeProperties_database": {
+						"value": "[parameters('MySql_onprem_properties_typeProperties_database')]"
+					},
+					"MySql_onprem_properties_typeProperties_username": {
+						"value": "[parameters('MySql_onprem_properties_typeProperties_username')]"
 					}
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "7x4-data-factory_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', '7x4-data-factory_ArmTemplate_0')]"
+			]
 		}
 	]
 }
