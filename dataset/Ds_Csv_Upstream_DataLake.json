@@ -1,5 +1,5 @@
 {
-	"name": "Ds_Binary_Upstream_DataLake_Zipped",
+	"name": "Ds_Csv_Upstream_DataLake",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "Ls_Upstream_DataLake",
@@ -11,20 +11,13 @@
 			},
 			"Dir": {
 				"type": "string"
-			},
-			"Filename": {
-				"type": "string"
 			}
 		},
 		"annotations": [],
-		"type": "Binary",
+		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "@dataset().Filename",
-					"type": "Expression"
-				},
 				"folderPath": {
 					"value": "@dataset().Dir",
 					"type": "Expression"
@@ -34,11 +27,11 @@
 					"type": "Expression"
 				}
 			},
-			"compression": {
-				"type": "ZipDeflate",
-				"level": "Optimal"
-			}
-		}
-	},
-	"type": "Microsoft.DataFactory/factories/datasets"
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
 }

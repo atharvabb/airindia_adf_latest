@@ -27,18 +27,18 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "Ds_Json_7X4Lookup",
+						"referenceName": "Ds_7x4_Data_Json",
 						"type": "DatasetReference",
 						"parameters": {
-							"Container": {
+							"container": {
 								"value": "@pipeline().parameters.Lookup_Container",
 								"type": "Expression"
 							},
-							"Dir": {
+							"dir": {
 								"value": "@pipeline().parameters.Lookup_Dir",
 								"type": "Expression"
 							},
-							"Filename": {
+							"filename": {
 								"value": "@pipeline().parameters.Lookup_Filename",
 								"type": "Expression"
 							}
@@ -96,7 +96,8 @@
 														"type": "BinarySource",
 														"storeSettings": {
 															"type": "AzureBlobFSReadSettings",
-															"recursive": true
+															"recursive": true,
+															"deleteFilesAfterCompletion": false
 														},
 														"formatSettings": {
 															"type": "BinaryReadSettings"
@@ -142,74 +143,7 @@
 															"Dir": {
 																"value": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
 																"type": "Expression"
-															},
-															"Filename": "@item().Src_File_Name"
-														}
-													}
-												]
-											}
-										]
-									},
-									{
-										"value": "zip",
-										"activities": [
-											{
-												"name": "Copy ZIP DataLake",
-												"type": "Copy",
-												"dependsOn": [],
-												"policy": {
-													"timeout": "0.12:00:00",
-													"retry": 0,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"source": {
-														"type": "BinarySource",
-														"storeSettings": {
-															"type": "AzureBlobFSReadSettings",
-															"recursive": true
-														},
-														"formatSettings": {
-															"type": "BinaryReadSettings",
-															"compressionProperties": {
-																"type": "ZipDeflateReadSettings",
-																"preserveZipFileNameAsFolder": false
 															}
-														}
-													},
-													"sink": {
-														"type": "BinarySink",
-														"storeSettings": {
-															"type": "AzureBlobFSWriteSettings"
-														}
-													},
-													"enableStaging": false
-												},
-												"inputs": [
-													{
-														"referenceName": "Ds_Binary_Upstream_DataLake_Zipped",
-														"type": "DatasetReference",
-														"parameters": {
-															"Container": "@item().Src_File_Container",
-															"Dir": "@item().Src_File_Dir",
-															"Filename": {
-																"value": "@item().Src_File_Name",
-																"type": "Expression"
-															}
-														}
-													}
-												],
-												"outputs": [
-													{
-														"referenceName": "Ds_Binary_7X4_DataLake",
-														"type": "DatasetReference",
-														"parameters": {
-															"Container": "@item().Dump_Layer",
-															"Dir": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
-															"Filename": "@item().Src_File_Name"
 														}
 													}
 												]
@@ -267,12 +201,15 @@
 												],
 												"outputs": [
 													{
-														"referenceName": "Ds_Json_7X4Lookup",
+														"referenceName": "Ds_7x4_Data_Json",
 														"type": "DatasetReference",
 														"parameters": {
-															"Container": "@item().Dump_Layer",
-															"Dir": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
-															"Filename": "@item().Src_File_Name"
+															"container": "@item().Dump_Layer",
+															"dir": {
+																"value": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
+																"type": "Expression"
+															},
+															"filename": "@item().Src_File_Name"
 														}
 													}
 												]

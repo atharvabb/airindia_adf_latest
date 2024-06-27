@@ -1,40 +1,37 @@
 {
-	"name": "Ds_Json_7X4Lookup",
+	"name": "Ds_Csv_7X4_DataLake",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "Ls_7X4_AirIndia_DataLake",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"Container": {
+			"Contaianer": {
 				"type": "string"
 			},
 			"Dir": {
 				"type": "string"
-			},
-			"Filename": {
-				"type": "string"
 			}
 		},
 		"annotations": [],
-		"type": "Json",
+		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "@dataset().Filename",
-					"type": "Expression"
-				},
 				"folderPath": {
 					"value": "@dataset().Dir",
 					"type": "Expression"
 				},
 				"fileSystem": {
-					"value": "@dataset().Container",
+					"value": "@dataset().Contaianer",
 					"type": "Expression"
 				}
-			}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
 		},
-		"schema": {}
+		"schema": []
 	}
 }
