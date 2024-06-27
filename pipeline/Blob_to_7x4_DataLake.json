@@ -5,6 +5,8 @@
 			{
 				"name": "Copy CSV DataLake",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -29,18 +31,7 @@
 						}
 					},
 					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "Ds_Binary_Upstream_DataLake",
-						"type": "DatasetReference",
-						"parameters": {
-							"Container": "dataset-entry",
-							"Dir": "flights.zip",
-							"Filename": "*"
-						}
-					}
-				]
+				}
 			}
 		],
 		"annotations": []

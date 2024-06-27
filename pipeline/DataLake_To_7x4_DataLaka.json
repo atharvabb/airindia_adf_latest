@@ -27,19 +27,19 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "Ds_7x4_Data_Json",
+						"referenceName": "Ds_Json_7X4_DataLake_File",
 						"type": "DatasetReference",
 						"parameters": {
 							"container": {
 								"value": "@pipeline().parameters.Lookup_Container",
 								"type": "Expression"
 							},
-							"dir": {
-								"value": "@pipeline().parameters.Lookup_Dir",
+							"file": {
+								"value": "@pipeline().parameters.Lookup_Filename",
 								"type": "Expression"
 							},
-							"filename": {
-								"value": "@pipeline().parameters.Lookup_Filename",
+							"dir": {
+								"value": "@pipeline().parameters.Lookup_Dir",
 								"type": "Expression"
 							}
 						}
@@ -77,7 +77,7 @@
 								},
 								"cases": [
 									{
-										"value": "csv",
+										"value": "file",
 										"activities": [
 											{
 												"name": "Copy CSV DataLake",
@@ -113,34 +113,26 @@
 												},
 												"inputs": [
 													{
-														"referenceName": "Ds_Binary_Upstream_DataLake",
+														"referenceName": "Ds_Binary_Upstream_File",
 														"type": "DatasetReference",
 														"parameters": {
-															"Container": {
-																"value": "@item().Src_File_Container",
-																"type": "Expression"
-															},
-															"Dir": {
-																"value": "@item().Src_File_Dir",
-																"type": "Expression"
-															},
-															"Filename": {
+															"file": {
 																"value": "@item().Src_File_Name",
 																"type": "Expression"
-															}
+															},
+															"dir": "@item().Src_File_Dir",
+															"container": "@item().Src_File_Container"
 														}
 													}
 												],
 												"outputs": [
 													{
-														"referenceName": "Ds_Binary_7X4_DataLake",
+														"referenceName": "Ds_Binary_7X4_Datalake_File",
 														"type": "DatasetReference",
 														"parameters": {
-															"Container": {
-																"value": "@item().Dump_Layer",
-																"type": "Expression"
-															},
-															"Dir": {
+															"container": "@item().Dump_Layer",
+															"file": "@item().Src_File_Name",
+															"dir": {
 																"value": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
 																"type": "Expression"
 															}
@@ -189,7 +181,7 @@
 												},
 												"inputs": [
 													{
-														"referenceName": "Ds_Api_Data_Json",
+														"referenceName": "Ds_Json_API_Upstream_File",
 														"type": "DatasetReference",
 														"parameters": {
 															"url": {
@@ -201,15 +193,75 @@
 												],
 												"outputs": [
 													{
-														"referenceName": "Ds_7x4_Data_Json",
+														"referenceName": "Ds_Json_7X4_DataLake_File",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": {
+																"value": "@item().Dump_Layer",
+																"type": "Expression"
+															},
+															"file": "@item().Src_File_Name",
+															"dir": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))"
+														}
+													}
+												]
+											}
+										]
+									},
+									{
+										"value": "multifile",
+										"activities": [
+											{
+												"name": "Copy Folder Level",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "BinarySource",
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": true,
+															"wildcardFolderPath": "@item().Src_File_Dir",
+															"wildcardFileName": "*",
+															"deleteFilesAfterCompletion": false
+														},
+														"formatSettings": {
+															"type": "BinaryReadSettings"
+														}
+													},
+													"sink": {
+														"type": "BinarySink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														}
+													},
+													"enableStaging": false
+												},
+												"inputs": [
+													{
+														"referenceName": "Binary1",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": "@item().Src_File_Container",
+															"dir": "@item().Src_File_Dir"
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "Ds_Binary_7X4_Datalake_Folder",
 														"type": "DatasetReference",
 														"parameters": {
 															"container": "@item().Dump_Layer",
-															"dir": {
-																"value": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
-																"type": "Expression"
-															},
-															"filename": "@item().Src_File_Name"
+															"dir": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))"
 														}
 													}
 												]

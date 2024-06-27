@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Execute Pipeline1",
+				"name": "Execute Upstream DataLake to DataLake",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -19,11 +19,11 @@
 				}
 			},
 			{
-				"name": "Execute Pipeline2",
+				"name": "Execute SQL To DataLake",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Execute Pipeline1",
+						"activity": "Execute Upstream DataLake to DataLake",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -35,10 +35,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Blob_to_7x4_DataLake",
+						"referenceName": "SQL_To_Datalake",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": false
+					"waitOnCompletion": true
 				}
 			}
 		],

@@ -1,0 +1,27 @@
+{
+	"name": "Ds_SQL_db_bsl_airindia_db",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ls_Azure_SWL_Database",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"db_table": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@split(dataset().db_table,'.')[0]",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@split(dataset().db_table,'.')[1]",
+				"type": "Expression"
+			}
+		}
+	}
+}

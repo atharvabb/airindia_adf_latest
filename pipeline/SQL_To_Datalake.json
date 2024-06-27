@@ -1,0 +1,152 @@
+{
+	"name": "SQL_To_Datalake",
+	"properties": {
+		"activities": [
+			{
+				"name": "Ref_Json_Lookup",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "Ds_Json_7X4_DataLake_File",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@pipeline().parameters.Lookup_Container",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@pipeline().parameters.Lookup_Filename",
+								"type": "Expression"
+							},
+							"dir": {
+								"value": "@pipeline().parameters.Lookup_Dir",
+								"type": "Expression"
+							}
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Ref_Json_Lookup",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Ref_Json_Lookup').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Ds_SQL_db_bsl_airindia_db",
+									"type": "DatasetReference",
+									"parameters": {
+										"db_table": "@item().tablename_source"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Ds_Parquet_7X4_Datalake",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@item().container_sink",
+											"type": "Expression"
+										},
+										"dir": {
+											"value": "@concat(item().directory_sink,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
+											"type": "Expression"
+										},
+										"filename": "@item().filename_sink"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"Lookup_Container": {
+				"type": "string",
+				"defaultValue": "reference-files"
+			},
+			"Lookup_Dir": {
+				"type": "string",
+				"defaultValue": "."
+			},
+			"Lookup_Filename": {
+				"type": "string",
+				"defaultValue": "Table_Source_SQL.json"
+			}
+		},
+		"annotations": []
+	}
+}
