@@ -650,6 +650,30 @@
 							"waitOnCompletion": true,
 							"parameters": {}
 						}
+					},
+					{
+						"name": "OnPrem SQL To Datalake",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Execute SQL To DataLake",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "OnPremise_SQL_To_Datalake",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
 					}
 				],
 				"policy": {
@@ -659,7 +683,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/DataLake_To_7x4_DataLaka')]",
-				"[concat(variables('factoryId'), '/pipelines/Azure_SQL_To_Datalake')]"
+				"[concat(variables('factoryId'), '/pipelines/Azure_SQL_To_Datalake')]",
+				"[concat(variables('factoryId'), '/pipelines/OnPremise_SQL_To_Datalake')]"
 			]
 		},
 		{
