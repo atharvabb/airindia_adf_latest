@@ -1,5 +1,5 @@
 {
-	"name": "Azure_SQL_To_Datalake",
+	"name": "OnPremise_SQL_To_Datalake",
 	"properties": {
 		"activities": [
 			{
@@ -79,9 +79,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "AzureSqlSource",
-									"queryTimeout": "02:00:00",
-									"partitionOption": "None"
+									"type": "MySqlSource"
 								},
 								"sink": {
 									"type": "ParquetSink",
@@ -104,11 +102,8 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "Ds_SQL_db_bsl_airindia_db",
-									"type": "DatasetReference",
-									"parameters": {
-										"db_table": "@item().tablename_source"
-									}
+									"referenceName": "MySqlTable1",
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
@@ -144,7 +139,7 @@
 			},
 			"Lookup_Filename": {
 				"type": "string",
-				"defaultValue": "Table_Source_SQL.json"
+				"defaultValue": "Table_Source_ONPREM_SQL.json"
 			}
 		},
 		"annotations": []
