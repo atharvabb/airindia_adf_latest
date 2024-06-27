@@ -1,0 +1,48 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "7x4-data-factory"
+		},
+		"Ls_7X4_AirIndia_DataLake_accountKey": {
+			"value": ""
+		},
+		"Ls_Azure_SWL_Database_password": {
+			"value": ""
+		},
+		"Ls_Upstream_Blob_connectionString": {
+			"value": ""
+		},
+		"Ls_Upstream_DataLake_accountKey": {
+			"value": ""
+		},
+		"Ls_7X4_AirIndia_DataLake_properties_typeProperties_url": {
+			"value": "https://airindia7x4.dfs.core.windows.net/"
+		},
+		"Ls_Azure_SWL_Database_properties_typeProperties_server": {
+			"value": "7x4.database.windows.net"
+		},
+		"Ls_Azure_SWL_Database_properties_typeProperties_database": {
+			"value": "bsl_airindia_db"
+		},
+		"Ls_Azure_SWL_Database_properties_typeProperties_userName": {
+			"value": "admin21"
+		},
+		"Ls_Http_Aips_properties_typeProperties_url": {
+			"value": "@{linkedService().api_url_from_key_vault}"
+		},
+		"Ls_Key_Vault_Secrets_properties_typeProperties_baseUrl": {
+			"value": "https://a7x4-key-vault.vault.azure.net/"
+		},
+		"Ls_Upstream_DataLake_properties_typeProperties_url": {
+			"value": "https://elayerairindiadatalake.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

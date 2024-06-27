@@ -1,0 +1,119 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "7x4-data-factory"
+		},
+		"Ls_7X4_AirIndia_DataLake_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'Ls_7X4_AirIndia_DataLake'"
+		},
+		"Ls_Azure_SWL_Database_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Ls_Azure_SWL_Database'"
+		},
+		"Ls_Upstream_Blob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Ls_Upstream_Blob'"
+		},
+		"Ls_Upstream_DataLake_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'Ls_Upstream_DataLake'"
+		},
+		"Ls_7X4_AirIndia_DataLake_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://airindia7x4.dfs.core.windows.net/"
+		},
+		"Ls_Azure_SWL_Database_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "7x4.database.windows.net"
+		},
+		"Ls_Azure_SWL_Database_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "bsl_airindia_db"
+		},
+		"Ls_Azure_SWL_Database_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "admin21"
+		},
+		"Ls_Http_Aips_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{linkedService().api_url_from_key_vault}"
+		},
+		"Ls_Key_Vault_Secrets_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://a7x4-key-vault.vault.azure.net/"
+		},
+		"Ls_Upstream_DataLake_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://elayerairindiadatalake.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "7x4-data-factory_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"Ls_7X4_AirIndia_DataLake_accountKey": {
+						"value": "[parameters('Ls_7X4_AirIndia_DataLake_accountKey')]"
+					},
+					"Ls_Azure_SWL_Database_password": {
+						"value": "[parameters('Ls_Azure_SWL_Database_password')]"
+					},
+					"Ls_Upstream_Blob_connectionString": {
+						"value": "[parameters('Ls_Upstream_Blob_connectionString')]"
+					},
+					"Ls_Upstream_DataLake_accountKey": {
+						"value": "[parameters('Ls_Upstream_DataLake_accountKey')]"
+					},
+					"Ls_7X4_AirIndia_DataLake_properties_typeProperties_url": {
+						"value": "[parameters('Ls_7X4_AirIndia_DataLake_properties_typeProperties_url')]"
+					},
+					"Ls_Azure_SWL_Database_properties_typeProperties_server": {
+						"value": "[parameters('Ls_Azure_SWL_Database_properties_typeProperties_server')]"
+					},
+					"Ls_Azure_SWL_Database_properties_typeProperties_database": {
+						"value": "[parameters('Ls_Azure_SWL_Database_properties_typeProperties_database')]"
+					},
+					"Ls_Azure_SWL_Database_properties_typeProperties_userName": {
+						"value": "[parameters('Ls_Azure_SWL_Database_properties_typeProperties_userName')]"
+					},
+					"Ls_Http_Aips_properties_typeProperties_url": {
+						"value": "[parameters('Ls_Http_Aips_properties_typeProperties_url')]"
+					},
+					"Ls_Key_Vault_Secrets_properties_typeProperties_baseUrl": {
+						"value": "[parameters('Ls_Key_Vault_Secrets_properties_typeProperties_baseUrl')]"
+					},
+					"Ls_Upstream_DataLake_properties_typeProperties_url": {
+						"value": "[parameters('Ls_Upstream_DataLake_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
