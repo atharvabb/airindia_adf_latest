@@ -27,18 +27,18 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "Ds_Json_7X4Lookup",
+						"referenceName": "Ds_7x4_Data_Json",
 						"type": "DatasetReference",
 						"parameters": {
-							"Container": {
+							"container": {
 								"value": "@pipeline().parameters.Lookup_Container",
 								"type": "Expression"
 							},
-							"Dir": {
+							"dir": {
 								"value": "@pipeline().parameters.Lookup_Dir",
 								"type": "Expression"
 							},
-							"Filename": {
+							"finename": {
 								"value": "@pipeline().parameters.Lookup_Filename",
 								"type": "Expression"
 							}
@@ -96,7 +96,8 @@
 														"type": "BinarySource",
 														"storeSettings": {
 															"type": "AzureBlobFSReadSettings",
-															"recursive": true
+															"recursive": true,
+															"deleteFilesAfterCompletion": false
 														},
 														"formatSettings": {
 															"type": "BinaryReadSettings"
@@ -142,87 +143,7 @@
 															"Dir": {
 																"value": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
 																"type": "Expression"
-															},
-															"Filename": "@item().Src_File_Name"
-														}
-													}
-												]
-											}
-										]
-									},
-									{
-										"value": "zip",
-										"activities": [
-											{
-												"name": "Copy ZIP DataLake",
-												"type": "Copy",
-												"dependsOn": [],
-												"policy": {
-													"timeout": "0.12:00:00",
-													"retry": 0,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"source": {
-														"type": "DelimitedTextSource",
-														"storeSettings": {
-															"type": "AzureBlobFSReadSettings",
-															"recursive": true,
-															"wildcardFolderPath": "@item().Src_File_Dir",
-															"wildcardFileName": {
-																"value": "*",
-																"type": "Expression"
-															},
-															"enablePartitionDiscovery": false
-														},
-														"formatSettings": {
-															"type": "DelimitedTextReadSettings"
-														}
-													},
-													"sink": {
-														"type": "DelimitedTextSink",
-														"storeSettings": {
-															"type": "AzureBlobFSWriteSettings"
-														},
-														"formatSettings": {
-															"type": "DelimitedTextWriteSettings",
-															"quoteAllText": true,
-															"fileExtension": ".txt"
-														}
-													},
-													"enableStaging": false,
-													"translator": {
-														"type": "TabularTranslator",
-														"typeConversion": true,
-														"typeConversionSettings": {
-															"allowDataTruncation": true,
-															"treatBooleanAsNumber": false
-														}
-													}
-												},
-												"inputs": [
-													{
-														"referenceName": "Ds_Csv_Upstream_DataLake",
-														"type": "DatasetReference",
-														"parameters": {
-															"Container": {
-																"value": "@item.Src_File_Container",
-																"type": "Expression"
-															},
-															"Dir": "@item().Src_File_Dir"
-														}
-													}
-												],
-												"outputs": [
-													{
-														"referenceName": "Ds_Csv_7X4_DataLake",
-														"type": "DatasetReference",
-														"parameters": {
-															"Contaianer": "@item().Dump_Layer",
-															"Dir": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))"
+															}
 														}
 													}
 												]
@@ -280,12 +201,15 @@
 												],
 												"outputs": [
 													{
-														"referenceName": "Ds_Json_7X4Lookup",
+														"referenceName": "Ds_7x4_Data_Json",
 														"type": "DatasetReference",
 														"parameters": {
-															"Container": "@item().Dump_Layer",
-															"Dir": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
-															"Filename": "@item().Src_File_Name"
+															"container": "@item().Dump_Layer",
+															"dir": {
+																"value": "@concat(item().Sink_File_Dir,'/dw_load_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
+																"type": "Expression"
+															},
+															"finename": "@item().Src_File_Name"
 														}
 													}
 												]
