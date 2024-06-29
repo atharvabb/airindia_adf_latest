@@ -1,5 +1,5 @@
 {
-	"name": "Ingesion_Pipeline",
+	"name": "End_To_End_Pipeline",
 	"properties": {
 		"activities": [
 			{
@@ -62,6 +62,36 @@
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Notebook1",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "OnPrem SQL To Datalake",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/atharvaxa9@gmail.com/main/Main_Workflow",
+					"baseParameters": {
+						"process_req": "\"ALL\""
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "7x4_databricks",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
