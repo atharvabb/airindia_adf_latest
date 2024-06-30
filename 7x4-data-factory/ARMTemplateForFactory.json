@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'MySql_onprem'"
 		},
+		"7x4_databricks_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0623-125433-717oe35t"
+		},
 		"Ls_7X4_AirIndia_DataLake_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://airindia7x4.dfs.core.windows.net/"
@@ -756,7 +760,7 @@
 										"waitOnCompletion": true,
 										"parameters": {
 											"Layer_Name": {
-												"value": "@item().Layer_Name",
+												"value": "@item()",
 												"type": "Expression"
 											}
 										}
@@ -1343,14 +1347,7 @@
 						},
 						"secretName": "databricks-access-token-7x4"
 					},
-					"newClusterNodeType": "Standard_DS3_v2",
-					"newClusterNumOfWorker": "1",
-					"newClusterSparkEnvVars": {
-						"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
-					},
-					"newClusterVersion": "9.1.x-scala2.12",
-					"clusterOption": "Fixed",
-					"newClusterInitScripts": []
+					"existingClusterId": "[parameters('7x4_databricks_properties_typeProperties_existingClusterId')]"
 				}
 			},
 			"dependsOn": [

@@ -654,7 +654,7 @@
 										"waitOnCompletion": true,
 										"parameters": {
 											"Layer_Name": {
-												"value": "@item().Layer_Name",
+												"value": "@item()",
 												"type": "Expression"
 											}
 										}
