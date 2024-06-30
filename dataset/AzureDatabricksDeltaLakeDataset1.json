@@ -1,0 +1,133 @@
+{
+	"name": "AzureDatabricksDeltaLakeDataset1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ls_delta_Lake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureDatabricksDeltaLakeDataset",
+		"typeProperties": {
+			"database": "bsl_airindia_gold",
+			"table": "reporting_7x4"
+		},
+		"schema": [
+			{
+				"name": "FlightNum",
+				"type": "integer"
+			},
+			{
+				"name": "Tail_Num",
+				"type": "string"
+			},
+			{
+				"name": "Origin",
+				"type": "string"
+			},
+			{
+				"name": "Dest",
+				"type": "string"
+			},
+			{
+				"name": "DepTime",
+				"type": "timestamp"
+			},
+			{
+				"name": "CRSDepTime",
+				"type": "integer"
+			},
+			{
+				"name": "ArrTime",
+				"type": "timestamp"
+			},
+			{
+				"name": "CRSArrTime",
+				"type": "integer"
+			},
+			{
+				"name": "UniqueCarrier",
+				"type": "string"
+			},
+			{
+				"name": "Distance",
+				"type": "integer"
+			},
+			{
+				"name": "Cancelled",
+				"type": "integer"
+			},
+			{
+				"name": "CancellationCode",
+				"type": "string"
+			},
+			{
+				"name": "Diverted",
+				"type": "integer"
+			},
+			{
+				"name": "CarrierDelay",
+				"type": "integer"
+			},
+			{
+				"name": "WeatherDelay",
+				"type": "integer"
+			},
+			{
+				"name": "NASDelay",
+				"type": "integer"
+			},
+			{
+				"name": "SecurityDelay",
+				"type": "integer"
+			},
+			{
+				"name": "LateAircraftDelay",
+				"type": "integer"
+			},
+			{
+				"name": "stg_id",
+				"type": "long"
+			},
+			{
+				"name": "Airline_Name",
+				"type": "string"
+			},
+			{
+				"name": "type",
+				"type": "string"
+			},
+			{
+				"name": "manufacturer",
+				"type": "string"
+			},
+			{
+				"name": "issue_date",
+				"type": "string"
+			},
+			{
+				"name": "model",
+				"type": "string"
+			},
+			{
+				"name": "status",
+				"type": "string"
+			},
+			{
+				"name": "aircraft_type",
+				"type": "string"
+			},
+			{
+				"name": "engine_type",
+				"type": "string"
+			},
+			{
+				"name": "dw_load_date",
+				"type": "date"
+			},
+			{
+				"name": "fly_date",
+				"type": "date"
+			}
+		]
+	}
+}
