@@ -1,24 +1,27 @@
 {
 	"name": "7x4_databricks",
-	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"annotations": [],
 		"type": "AzureDatabricks",
 		"typeProperties": {
 			"domain": "https://adb-3932682371648555.15.azuredatabricks.net",
+			"accessToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "Ls_Key_Vault_Secrets",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "databricks-access-token-7x4"
+			},
 			"newClusterNodeType": "Standard_DS3_v2",
 			"newClusterNumOfWorker": "1",
 			"newClusterSparkEnvVars": {
 				"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
 			},
-			"newClusterVersion": "10.4.x-scala2.12",
+			"newClusterVersion": "9.1.x-scala2.12",
 			"clusterOption": "Fixed",
-			"newClusterInitScripts": [],
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI0ZWM1ODQ5ZS01ZmMxLTQ0ZmQtODIxMy1jZmUwNzY4Y2JjOTIiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
-		},
-		"connectVia": {
-			"referenceName": "On-Prem-AirIndia-Optimus-8106",
-			"type": "IntegrationRuntimeReference"
+			"newClusterInitScripts": []
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
 }
