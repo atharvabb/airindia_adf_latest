@@ -611,7 +611,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Notebook1",
+						"name": "Run Databricks Notebook",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
